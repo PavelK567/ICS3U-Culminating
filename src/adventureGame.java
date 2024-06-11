@@ -6,11 +6,11 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
 public class adventureGame {
 
     // Initialize all the variables used in the game
     String[] commandList = {"help","use"};
+    String[] commandDesc = {"help [command]\nGives information on how to use a command","use [item1] [item2]\nUses an item on object or another item"};
 
     
     public void play(){
@@ -118,11 +118,18 @@ public class adventureGame {
 
         // Get the first word of the input (the command word, i.e. "Use")
         String cmd = input.split(" ")[0];
-        
-        // Second word of the input (the action item, i.e. "apple")
+
         String item1 = null;
-        // OPTIONAL : Third word of the input (the acted item, i.e. "fridge"))
         String item2 = null;
+        // Second word of the input (the action item, i.e. "apple")
+        if (input.split(" ").length > 1){
+            item1 = input.split(" ")[1];
+            if (input.split(" ").length > 2){
+                item2 = input.split(" ")[1];
+            }
+        }
+            // OPTIONAL : Third word of the input (the acted item, i.e. "fridge"))
+
 
         String output = "> " + input + "\n";
         boolean invalid = true;
@@ -147,6 +154,21 @@ public class adventureGame {
                     commands = commands + commandList[i] + ", ";
                 }
                 output += ("Possible Commands : " + commands);
+            }
+            else{
+                int helpCommand = -1;
+                for (int i = 0; i < commandList.length; i ++){
+                    if (commandList[i].equals(item1)){
+                        helpCommand = i;
+                        break;
+                    }
+                }
+                if(helpCommand == -1){
+                    output += "I can't help with \"" + item1 + "\"";
+                }
+                else{
+                    output += commandDesc[helpCommand];
+                }
             }
         }
         return output;
