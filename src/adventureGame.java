@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -9,8 +10,17 @@ import java.awt.event.ActionListener;
 public class adventureGame {
 
     // Initialize all the variables used in the game
-    String[] commandList = {"help","use"};
-    String[] commandDesc = {"help [command]\nGives information on how to use a command","use [item1] [item2]\nUses an item on object or another item"};
+
+    Font gameFont = new Font("Courier", Font.PLAIN, 18);
+    Font buttonFont = new Font("Courier", Font.BOLD, 18);
+
+    String[] commandList = {
+    "help",
+    "use"};
+
+    String[] commandDesc = {
+    "help [command]\nGives information on how to use a command",
+    "use [item1] [item2]\nUses an item on object or another item"};
 
     
     public void play(){
@@ -40,7 +50,8 @@ public class adventureGame {
 
         // Area display Set up 
         roomPanel.setEditable(false);
-        roomPanel.setColumns(20);
+        roomPanel.setColumns(30);
+        roomPanel.setFont(gameFont);
         
         gbc.gridx = 0;
         gbc.gridy = 0;
@@ -52,10 +63,12 @@ public class adventureGame {
         gameWindow.add(roomPanel,gbc);
 
         // Log Set up 
-        log.setRows(5);
-        log.setColumns(20);
+        log.setRows(10);
+        log.setColumns(30);
         log.setEditable(false);
         log.setWrapStyleWord(true);
+        log.setLineWrap(true);
+        log.setFont(gameFont);
 
         logPane.createVerticalScrollBar();
         
@@ -67,6 +80,8 @@ public class adventureGame {
         gameWindow.add(log,gbc);
 
         // Text entry area Set up 
+        input.setFont(gameFont);
+
         gbc.gridx = 0;
         gbc.gridy = 4;
 
@@ -78,6 +93,7 @@ public class adventureGame {
         itemsPanel.setRows(3);
         itemsPanel.setColumns(5);
         itemsPanel.setEditable(false);
+        itemsPanel.setFont(gameFont);
 
         gbc.gridx = 4;
         gbc.gridy = 0;
@@ -88,6 +104,8 @@ public class adventureGame {
 
         
         // Send button Set up
+        send.setFont(buttonFont);
+
         gbc.gridx = 4;
         gbc.gridy = 4;
 
@@ -97,15 +115,15 @@ public class adventureGame {
         // Set Action for button
         send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){  
-                log.setText(toLog(log.getText(),runCommand(input.getText()))); 
+                log.setText(toLog(log.getText(),runCommand(input.getText()),log.getLineCount())); 
                 input.setText(""); 
             }  
         });
 
         gameWindow.add(send,gbc);
-
+        
         // Finish setting up window
-        gameWindow.setSize(300,250);
+        gameWindow.setSize(550,375);
 
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -121,15 +139,16 @@ public class adventureGame {
 
         String item1 = null;
         String item2 = null;
-        // Second word of the input (the action item, i.e. "apple")
+
+        // Check for second word of the input (the action item, i.e. "apple")
         if (input.split(" ").length > 1){
             item1 = input.split(" ")[1];
+            
+            // Check for third word of the input (the acted on item, i.e. "fridge"))
             if (input.split(" ").length > 2){
                 item2 = input.split(" ")[1];
             }
         }
-            // OPTIONAL : Third word of the input (the acted item, i.e. "fridge"))
-
 
         String output = "> " + input + "\n";
         boolean invalid = true;
@@ -175,7 +194,10 @@ public class adventureGame {
     }
 
     // Method for controlling text in the log
-    public String toLog(String logText, String text){
+    public String toLog(String logText, String text, int logLines){
+        if (logLines  > 10){
+        }
+
         return (logText + "\n" + text);
     }
 
