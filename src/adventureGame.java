@@ -71,13 +71,14 @@ public class adventureGame {
         log.setFont(gameFont);
 
         logPane.createVerticalScrollBar();
+        logPane.setViewportView(log);
         
         gbc.gridx = 0;
         gbc.gridy = 1;
 
         gbc.gridwidth = 3;
         gbc.gridheight = 3;
-        gameWindow.add(log,gbc);
+        gameWindow.add(logPane,gbc);
 
         // Text entry area Set up 
         input.setFont(gameFont);
@@ -115,7 +116,7 @@ public class adventureGame {
         // Set Action for button
         send.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e){  
-                log.setText(toLog(log.getText(),runCommand(input.getText()),log.getLineCount())); 
+                log.append(runCommand(input.getText()));
                 input.setText(""); 
             }  
         });
@@ -193,12 +194,7 @@ public class adventureGame {
         return output;
     }
 
-    // Method for controlling text in the log
-    public String toLog(String logText, String text, int logLines){
-        if (logLines  > 10){
-        }
 
-        return (logText + "\n" + text);
     }
 
 
