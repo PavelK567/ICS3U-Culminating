@@ -264,7 +264,7 @@ public class adventureGame {
                // Goes through the list of items in the current room and finds the one you're using things on 
                 for(int i = 0; i < currentRoom.contains.size(); i++){
                     if(item2.equals(currentRoom.contains.get(i).name)){
-                        useOn = inventory.get(i);
+                        useOn = currentRoom.contains.get(i);
                         break;
                     }
                 if(currentRoom.contains.contains(useOn)){
