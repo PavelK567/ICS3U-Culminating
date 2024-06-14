@@ -7,23 +7,35 @@ import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import java.util.ArrayList;
+
 public class adventureGame {
 
     // Initialize all the variables used in the game
+    public room kitchen = new room();
+    public room livingRoom = new room();
+
+    public room currentRoom;
+    public ArrayList<room> roomList = new ArrayList<room>();
 
     Font gameFont = new Font("Courier", Font.PLAIN, 18);
     Font buttonFont = new Font("Courier", Font.BOLD, 18);
 
     String[] commandList = {
     "help",
-    "use"};
+    "use",
+    "goto"};
 
     String[] commandDesc = {
     "help [command]\nGives information on how to use a command",
-    "use [item1] [item2]\nUses an item on object or another item"};
+    "use [item1] [item2]\nUses an item on object or another item",
+    "goto [room]\nMove to a connected room"};
 
     
     public void play(){
+
+        createRooms();
+        currentRoom = kitchen;
         
         // Start Initialize UI
         JFrame gameWindow = new JFrame("Adventure Game");
@@ -51,6 +63,7 @@ public class adventureGame {
         // Area display Set up 
         roomPanel.setEditable(false);
         roomPanel.setColumns(30);
+        roomPanel.setRows(3);
         roomPanel.setFont(gameFont);
         
         gbc.gridx = 0;
@@ -118,13 +131,15 @@ public class adventureGame {
             public void actionPerformed(ActionEvent e){  
                 log.append(runCommand(input.getText()));
                 input.setText(""); 
+                roomPanel.setText(updateRoomDisplay());
             }  
         });
 
+        roomPanel.setText(updateRoomDisplay());
         gameWindow.add(send,gbc);
         
         // Finish setting up window
-        gameWindow.setSize(550,375);
+        gameWindow.setSize(550,450);
 
         gameWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
@@ -133,8 +148,8 @@ public class adventureGame {
     }
 
     // Method to recieve and process a command
-    public String runCommand(String input){
-
+    String runCommand(String input){
+        
         // Get the first word of the input (the command word, i.e. "Use")
         String cmd = input.split(" ")[0];
 
@@ -191,11 +206,53 @@ public class adventureGame {
                 }
             }
         }
+
+        // "goto" command
+        if(cmd.equals("goto")){
+            room goingTo = new room();
+            System.out.println(roomList);
+            for(int i = 0; i < roomList.size(); i++){
+                System.out.println(item1 + " " + roomList.get(i).name);
+                if(item1.equals(roomList.get(i).name)){
+                    goingTo = roomList.get(i);
+                    break;
+                }
+            }
+            if(currentRoom.connects.contains(goingTo)){
+                currentRoom = goingTo;
+                output += "You go to the \"" + goingTo.name + "\"";
+            }else {
+                output += "Can't get to \"" + item1 + "\"";
+            }
+        }
+
+        
         return output;
     }
 
+    void createRooms(){
+        kitchen.initializeRoom("Kitchen","A small kitchen");
+        livingRoom.initializeRoom("Living_Room","It's a living room");
 
+        kitchen.connectTo(livingRoom);
+        livingRoom.connectTo(kitchen);
+
+        roomList.add(kitchen);
+        roomList.add(livingRoom);
     }
 
+    String updateRoomDisplay(){
+        String roomInfo = "Area : ";
+        roomInfo += currentRoom.name + "\n";
+        roomInfo += currentRoom.desc + "\nConnects to : ";
 
+        String connections = ""; 
+        for(int i = 0; i < currentRoom.connects.size(); i ++){
+            connections += currentRoom.connects.get(i).name + ", ";
+        }
+
+        roomInfo += connections;
+
+        return roomInfo;
+    }
 }
